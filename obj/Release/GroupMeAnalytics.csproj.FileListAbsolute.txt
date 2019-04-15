@@ -1,0 +1,15 @@
+C:\Users\jperry\source\repos\GroupMeAnalytics\GroupMeAnalytics\bin\Release\GroupMeAnalytics.exe.config
+C:\Users\jperry\source\repos\GroupMeAnalytics\GroupMeAnalytics\bin\Release\GroupMeAnalytics.exe
+C:\Users\jperry\source\repos\GroupMeAnalytics\GroupMeAnalytics\bin\Release\GroupMeAnalytics.pdb
+C:\Users\jperry\source\repos\GroupMeAnalytics\GroupMeAnalytics\bin\Release\Newtonsoft.Json.dll
+C:\Users\jperry\source\repos\GroupMeAnalytics\GroupMeAnalytics\bin\Release\RestSharp.dll
+C:\Users\jperry\source\repos\GroupMeAnalytics\GroupMeAnalytics\bin\Release\System.ValueTuple.dll
+C:\Users\jperry\source\repos\GroupMeAnalytics\GroupMeAnalytics\bin\Release\Newtonsoft.Json.pdb
+C:\Users\jperry\source\repos\GroupMeAnalytics\GroupMeAnalytics\bin\Release\Newtonsoft.Json.xml
+C:\Users\jperry\source\repos\GroupMeAnalytics\GroupMeAnalytics\bin\Release\RestSharp.xml
+C:\Users\jperry\source\repos\GroupMeAnalytics\GroupMeAnalytics\bin\Release\System.ValueTuple.xml
+C:\Users\jperry\source\repos\GroupMeAnalytics\GroupMeAnalytics\obj\Release\GroupMeAnalytics.csprojAssemblyReference.cache
+C:\Users\jperry\source\repos\GroupMeAnalytics\GroupMeAnalytics\obj\Release\GroupMeAnalytics.csproj.CoreCompileInputs.cache
+C:\Users\jperry\source\repos\GroupMeAnalytics\GroupMeAnalytics\obj\Release\GroupMeAnalytics.csproj.CopyComplete
+C:\Users\jperry\source\repos\GroupMeAnalytics\GroupMeAnalytics\obj\Release\GroupMeAnalytics.exe
+C:\Users\jperry\source\repos\GroupMeAnalytics\GroupMeAnalytics\obj\Release\GroupMeAnalytics.pdb
