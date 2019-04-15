@@ -13,41 +13,49 @@ namespace GroupMeAnalytics {
 
             var client = new RestClient("https://api.groupme.com/v3");
             var accessToken = ConfigurationManager.AppSettings["accessToken"];
-            var cacheFilePath = ConfigurationManager.AppSettings["cacheFileLocation"];
+            var cacheFilePathBaseDir = ConfigurationManager.AppSettings["cacheFileLocation"];
 
-            var groups = getGroups(client, accessToken);
-            Console.WriteLine("Members");
-            foreach (var member in groups.response[0].members) {
-                Console.WriteLine($"{member.name} {member.user_id}");
+            var groups = getGroups(client, accessToken).response.ToList();
+
+            foreach (var group in groups) {
+                Console.WriteLine($"Members of \"{group.name}\"");
+                foreach (var member in group.members) {
+                    Console.WriteLine($"{member.name} {member.user_id}");
+                }
+
+                var cacheFileForSpecificGroup = cacheFilePathBaseDir + (group.name);
+                var messages = getAllMessages(client, accessToken, cacheFileForSpecificGroup, group);
+                (var likers, var likees, var totalMessagesPerUser, var likerToTotalMessages, var likeeToTotalMessages) = analyzeLikes(group.members, messages);
+
+                Console.WriteLine("\nLikes Given");
+                foreach (var liker in likers.OrderByDescending(key => key.Value)) {
+                    Console.WriteLine($"{liker.Key} - {liker.Value}");
+                }
+
+                Console.WriteLine("\nLikes Received");
+                foreach (var likee in likees.OrderByDescending(key => key.Value)) {
+                    Console.WriteLine($"{likee.Key} - {likee.Value}");
+                }
+
+                Console.WriteLine("\nMessages Sent");
+                foreach (var message in totalMessagesPerUser.OrderByDescending(key => key.Value)) {
+                    Console.WriteLine($"{message.Key} - {message.Value}");
+                }
+
+                Console.WriteLine("\nLikes Given / Total Messages Sent by Member");
+                foreach (var ratio in likerToTotalMessages.OrderByDescending(key => key.Value)) {
+                    Console.WriteLine($"{ratio.Key} - {ratio.Value.ToString("0.#####")}:1");
+                }
+
+                Console.WriteLine("\nLikes Received / Total Messages Sent by Member");
+                foreach (var ratio in likeeToTotalMessages.OrderByDescending(key => key.Value)) {
+                    Console.WriteLine($"{ratio.Key} - {ratio.Value.ToString("0.#####")}:1");
+                }
+
+                Console.WriteLine("\n\n\n");
             }
 
-            var messages = getAllMessages(client, accessToken, cacheFilePath, groups.response);
-            (var likers, var likees, var totalMessagesPerUser, var likerToTotalMessages, var likeeToTotalMessages) = analyzeLikes(groups.response[0].members, messages);
 
-            Console.WriteLine("\nLikes Given");
-            foreach (var liker in likers.OrderByDescending(key => key.Value)) {
-                Console.WriteLine($"{liker.Key} - {liker.Value}");
-            }
-
-            Console.WriteLine("\nLikes Received");
-            foreach (var likee in likees.OrderByDescending(key => key.Value)) {
-                Console.WriteLine($"{likee.Key} - {likee.Value}");
-            }
-
-            Console.WriteLine("\nMessages Sent");
-            foreach (var message in totalMessagesPerUser.OrderByDescending(key => key.Value)) {
-                Console.WriteLine($"{message.Key} - {message.Value}");
-            }
-
-            Console.WriteLine("\nLikes Given / Total Messages Sent by Member");
-            foreach (var ratio in likerToTotalMessages.OrderByDescending(key => key.Value)) {
-                Console.WriteLine($"{ratio.Key} - {ratio.Value.ToString("0.#####")}:1");
-            }
-
-            Console.WriteLine("\nLikes Received / Total Messages Sent by Member");
-            foreach (var ratio in likeeToTotalMessages.OrderByDescending(key => key.Value)) {
-                Console.WriteLine($"{ratio.Key} - {ratio.Value.ToString("0.#####")}:1");
-            }
 
             Console.ReadLine();
         }
@@ -98,19 +106,19 @@ namespace GroupMeAnalytics {
             }
         }
 
-        private static List<Message> getAllMessages(RestClient client, string accessToken, string cacheFilePath, List<GroupResponse> groupMetaData) {
+        private static List<Message> getAllMessages(RestClient client, string accessToken, string cacheFilePath, GroupResponse groupMetaData) {
             List<Message> messages = new List<Message>();
-            if (File.Exists(cacheFilePath)) 
+            if (File.Exists(cacheFilePath))
                 messages = ReadCachedMessageData<List<Message>>(cacheFilePath);
             else
                 Console.WriteLine("No cache file found. Downloading message data. This may take a while.");
 
             var idOfLastReadMessage = messages.Count > 0 ? messages.Last().id : "0";
-            
+
             var moreMessagesToGet = true;
             var messagesDownloaded = 0;
             while (moreMessagesToGet) {
-                var response = getMessages(client, accessToken, groupMetaData[0].group_id, idOfLastReadMessage.ToString());
+                var response = getMessages(client, accessToken, groupMetaData.group_id, idOfLastReadMessage.ToString());
                 idOfLastReadMessage = response.Count > 0 ? response.Last().id : "0";
                 messages.AddRange(response);
                 if (response.Count < 100) {
@@ -127,7 +135,7 @@ namespace GroupMeAnalytics {
 
             if (messagesDownloaded > 0)
                 CacheMessageData(cacheFilePath, messages);
-            
+
             return messages;
         }
 
