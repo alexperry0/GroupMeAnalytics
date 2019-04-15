@@ -1,6 +1,3 @@
-#Ignore App.config so we don't accidently upload access key
 App.config
-
-#Ignore build specific App.config
 bin/Debug/GroupMeAnalytics.exe.confg
 bin/Release/GroupMeAnalytics.exe.config
